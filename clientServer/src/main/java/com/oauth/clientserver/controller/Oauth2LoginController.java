@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 
 @CrossOrigin(origins = "http://about:blank")
 @RestController
@@ -34,6 +33,7 @@ public class Oauth2LoginController {
     @Operation(summary = "LoginToken", description = "Login/Join token")
     public ResponseEntity<LoginResponse> Login(@RequestBody LoginRequest userInfo, HttpServletResponse response) throws Exception {
         String getEmail = userInfo.getEmail();
+
 
 
         logger.info("getEmail" + getEmail);
@@ -63,7 +63,7 @@ public class Oauth2LoginController {
 
     @PostMapping("/user/login")
     @Operation(summary = "Login", description = "Login")
-    public String LoginAuth(@RequestBody LoginRequest userInfo, HttpServletRequest request) throws Exception {
+    public ResponseEntity<LoginResponse> LoginAuth(@RequestBody LoginRequest userInfo, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         String getEmail = userInfo.getEmail();
         String encodingPassword = userInfo.getPassword();
@@ -75,10 +75,20 @@ public class Oauth2LoginController {
 
         if (passwordEncoder.matches(encodingPassword, encodePw)) {
             session.setAttribute("member", userInfo);
+            String token = userService.login(userEntity.getEmail());
+            String refreshToken = userService.refreshToken(userEntity.getName());
 
-            return "로그인 성공!";
+            logger.info("@@@@@@@" + token);
+
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setAccessToken(token);
+            loginResponse.setRefreshToken(refreshToken);
+
+
+            return ResponseEntity.ok().body(loginResponse);
 
         }
+
 
         throw new Exception();
 

@@ -1,13 +1,15 @@
 package com.oauth.clientserver.response;
 
+import com.oauth.clientserver.service.ResponseService;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Setter
 @Getter
-public class LoginResponse {
+public class LoginResponse  extends ResponseService {
 
     private String accessToken;
     private String refreshToken;
+
+
 }
