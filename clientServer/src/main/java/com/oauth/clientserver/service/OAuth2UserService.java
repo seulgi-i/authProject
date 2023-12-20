@@ -5,8 +5,10 @@ import com.oauth.clientserver.repository.UserRepository;
 import com.oauth.clientserver.repository.entity.UserEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -22,11 +24,16 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     final Log logger = LogFactory.getLog(getClass());
 
 
-    private final UserRepository userRepository;
+    private final  UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public OAuth2UserService(UserRepository userRepository) {
+
+    public OAuth2UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -37,6 +44,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         UserEntity userEntity = userRepository.findByEmail(email);
 
         logger.info("userEntity???===> "+userEntity);
+        logger.info("password???===> "+password);
 
         // User info generate for DB
         if (userEntity == null) {
@@ -45,7 +53,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setEmail(email);
             userEntity.setName(name);
             userEntity.setRole("ADMIN");
-//            userEntity.
+            userEntity.setPassword(passwordEncoder.encode(password));
+
             userRepository.save(userEntity);
         }
 

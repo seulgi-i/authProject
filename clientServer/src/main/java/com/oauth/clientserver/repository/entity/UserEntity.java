@@ -24,4 +24,6 @@ public class UserEntity {
     private String role;
 
     private String refreshToken;
+
+    private String password;
 }

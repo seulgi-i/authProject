@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class LoginRequest {
-    @Schema(description = "사용자 이름", example = "seulgi choi")
-    private String userName;
-    @Schema(description = "이메일", example = "458chi@gmail.com")
+    @Schema(description = "사용자 이메일", example = "458chi@gmail.com")
     private String email;
+    @Schema(description = "비밀번호", example = "1234")
+    private String password;
 }

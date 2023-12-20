@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 @Configuration
 public class SwaggerConfiguration {
 
+
     @Bean
     public OpenAPI openAPI() {
         Info info = new Info()

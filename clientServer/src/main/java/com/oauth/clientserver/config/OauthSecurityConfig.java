@@ -1,15 +1,11 @@
 package com.oauth.clientserver.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oauth.clientserver.service.OAuth2UserService;
 import com.oauth.clientserver.utils.JwtUtil;
-import io.jsonwebtoken.Jwts;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -18,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -46,7 +44,7 @@ public class OauthSecurityConfig {
 //                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //                })
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login/token", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**","/swagger-ui/index.html#/oauth-2-login-controller/Login","http://localhost:3000").permitAll()
+                        .requestMatchers("/login/token","/user/login", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**","/swagger-ui/index.html#/oauth-2-login-controller/Login","http://localhost:3000").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
