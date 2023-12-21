@@ -5,7 +5,6 @@ import com.oauth.clientserver.repository.UserRepository;
 import com.oauth.clientserver.repository.entity.UserEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,18 +23,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     final Log logger = LogFactory.getLog(getClass());
 
 
-    private final  UserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
 
-    public OAuth2UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public OAuth2UserService (UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser (OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String email = oAuth2User.getAttributes().get("email").toString();
@@ -43,8 +42,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String password = "1234";
         UserEntity userEntity = userRepository.findByEmail(email);
 
-        logger.info("userEntity???===> "+userEntity);
-        logger.info("password???===> "+password);
+        logger.info("userEntity???===> " + userEntity);
+        logger.info("password???===> " + password);
 
         // User info generate for DB
         if (userEntity == null) {

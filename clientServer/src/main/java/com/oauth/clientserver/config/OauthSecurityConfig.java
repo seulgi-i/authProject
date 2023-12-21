@@ -14,8 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -33,9 +31,10 @@ public class OauthSecurityConfig {
 
 
     final Log logger = LogFactory.getLog(getClass());
+
     @Bean
     @Order(1)
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain defaultSecurityFilterChain (HttpSecurity http) throws Exception {
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -44,19 +43,19 @@ public class OauthSecurityConfig {
 //                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //                })
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login/token","/user/login", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**","/swagger-ui/index.html#/oauth-2-login-controller/Login","http://localhost:3000").permitAll()
+                        .requestMatchers("/login/token", "/user/login", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**", "/swagger-ui/index.html#/oauth-2-login-controller/Login", "http://localhost:3000").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
-                .successHandler(successHandler())
-                .userInfoEndpoint(userInfo ->
-                    userInfo.userService(oAuth2UserService)));
+                        .successHandler(successHandler())
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(oAuth2UserService)));
         return http.build();
-
     }
+
     @Bean
-    public AuthenticationSuccessHandler successHandler() {
+    public AuthenticationSuccessHandler successHandler () {
         return ((request, response, authentication) -> {
             long tokenPeriod = 1000L * 60L * 10L;
             long refreshTokenPeriod = 1000L * 60L * 60L * 24L * 7L; // 1 week
@@ -72,7 +71,6 @@ public class OauthSecurityConfig {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.addHeader("refreshToken", "Bearer " + refreshToken);
             response.setHeader("Authorization", "Bearer " + accessToken);
-
 
 
             // SecurityContext에 Authentication 객체를 설정.
